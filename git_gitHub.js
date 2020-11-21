@@ -8,7 +8,7 @@
 
 3. 版本管理方式：保存每个版本的快照
 
-4. 在命令行中操作文件的指令：
+4. 在 git 命令行中操作文件的指令：
     ls 列出所有文件、目录
     touch xxx 新增文件
     mkdir 新增目录
@@ -36,6 +36,9 @@
         git log --oneline --grep="xxx"  可以從 Commit 訊息裡面搜尋符合 xxx 的內容
         git log -S "xxx" 可以搜尋在所有 Commit 的檔案中，哪些符合特定條件的
         git log --oneline --since="9am" --until="12am" 指定时间
+    4) git rm -f xxx 强制删除已经 add 了但还未 commit 的文件
+       git rm xxx 删除已经 commit 的文件
+
 
 
 
