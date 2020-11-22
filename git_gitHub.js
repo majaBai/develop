@@ -38,6 +38,8 @@
         git log --oneline --since="9am" --until="12am" 指定时间
     4) git rm -f xxx 强制删除已经 add 了但还未 commit 的文件
        git rm xxx 删除已经 commit 的文件
+       git rm xxx --cached 并不是真的删除文件，而是让文件 xxx 脱离 git 的管控
+
 
 
 
