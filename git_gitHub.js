@@ -76,8 +76,8 @@
             Commit 拆出來的檔案	       丟回工作目錄	        丟回暫存區	     直接丟掉
 
             使用 git reset commitId 后 HEAD 指针会指向 commitId 所在的 commit; 相应的文件内容也会变化。
-            使用 git reset commitID --hard 或者 git reset HEAD~前几个Commit --hard 拆掉commit后，
-            可以使用 git reflog 来查看所有commit记录，获取拆掉的 commit id, 并在需要时进行恢复
+            使用 git reset commitID --hard 或者 git reset HEAD~前几个Commit --hard 拆掉commit后，可以使用 git reflog 来查看所有commit记录，
+            获取拆掉的 commit id, 并在需要时进行恢复
 
         d. 使用 --amend 參數來修改最後一次的 Commit。
             git commit --amend --no-edit 表示该次commit没有内容，提交的内容会归并到上一次commit中
@@ -124,5 +124,62 @@
        如果使用 -D 删除了未合并的分支，后悔了，如何找回来呢？git branch newBname xxxdeleteId, 需要记住 xxxdeleteId 这个删除id值（如果没记住，用 git reflog 指令去翻翻看），
        从这里新建一个分支，这样新分支 newBname 就会获取之前未合并的分支内容
 
-       如果发生冲突，首先手动排查冲突，然后add 冲突文件， commit ， 再次merge
+       取消合并：git reset HEAD^ --hard 一行指令，拆掉這個合併的 Commit 大家就會退回合併前的狀態
+
+    7) 基于 rebase 进行合并
+        從字面上來看，「rebase」是「re」加上「base」，翻成中文大概是「重新定義分支的參考基準」的意思。
+        所謂「base」就是指「你這分支是從哪裡生出來的」，以上面這個例子來說，cat 跟 dog 這兩個分支的 base 都是 master。
+        接著我們試著使用 git rebase 指令來「組合」cat 跟 dog 這兩個分支：
+        $ git rebase dog
+        大概就是「我，就是 cat 分支，我現在要重新定義我的參考基準，並且將使用 dog 分支當做我新的參考基準」的意思
+
+        取消基于 rebase 的合并：
+         1) 使用 git reflog 查看 HEAD 记录， 找到 Rebase 前的最後動作id
+            $ git reset 最後動作id --hard
+         2) 使用 git reset ORIG_HEAD --hard 輕鬆跳回 Rebase 前的狀態
+           ORIG_HEAD 會記錄「危險操作」之前 HEAD 的位置。例如分支合併或是 Reset 之類的都算是所謂的「危險操作」。
+           使用 Rebase 來合併分支的好處，就是它不像一般合併可能會產生額外的合併專用的 Commit，而且歷史順序可以依照誰 Rebase 誰而決定
+           缺點就是它相對的比一般的合併來得沒那麼直覺，一個不小心可能會弄壞掉而且還不知道怎麼 Reset 回來，或是發生衝突的時候就會停在一半，對不熟悉 Rebase 的人來說是個困擾
+    8) 解决合并冲突问题
+        基本合并： 手动解决冲突 -> git add 冲突文件 -> git commit
+        基于 rebase 的冲突： 手动解决冲突 -> git add 冲突文件 -> git rebase --continue
+
+    9) 如果发生冲突是非文字文件，比如同名的图片
+       决定使用哪张图片 git checkout --ours xxx.jpg 保留当前分支的图片
+                        git checkout --theirs xxx.jpg 保留合并进来的图片
+
+    10) 回到过去的某一个 commit 上重新开一个新分支
+        首先可通过 git log 查看你想定位的 commit id
+        git branch newBranch commitId  基于某个 commit 新开了一个分支
+        git checkout -b newBranch commitId 基于某个 commit 新开了一个分支并切入新分支
+
+    11) 修改历史 commit 信息
+        $ git rebase -i commitId (-i 參數是指要進入 Rebase 指令的「互動模式」，而後面的 commitId 是指這次的 Rebase 指令的應用範圍會「從現在到 commitId 這個 Commit」
+        這個指令會跳出一個 Vim 編輯器
+
+    12) revert/ rebase / reset
+        指令	改變歷史紀錄	                說明
+        Reset	    是	            把目前的狀態設定成某個指定的 Commit 的狀態，通常適用於尚未推出去 (push) 的 Commit。
+        Rebase	    是	            不管是新增、修改、刪除 Commit 都相當方便，用來整理、編輯還沒有推出去的 Commit 相當方便，但通常也只適用於尚未推出去的 Commit。
+        Revert	    否	            新增一個 Commit 來反轉（或說取消）另一個 Commit 的內容，原本的 Commit 依舊還是會保留在歷史紀錄中。雖然會因此而增加 Commit 數，
+                                    但通常比較適用於已經推出去的 Commit，或是不允許使用 Reset 或 Rebase 之修改歷史紀錄的指令的場合。
+   13) tag 標籤
+        通常在開發軟體有完成特定的里程碑，例如軟體版號 1.0.0 或是 beta-release 之類的，這時候就很適合使用標籤做標記
+        $ git tag tagName commitId  为某个 commit 打上 tagName 标签
+        $ git tag tagName 为当前所在的 commit 打上标签
+        $ git tag tagName commitId -a -m "description for tag"  为某个 commit 打上 tagName 标签，并且 tag 带有description
+        $ git tag -d tagName 删除 tagName 标签
+
+    14） 当前在 a 分支，巩固走还未做完； 但需要紧急切换到 b 分支工作
+         方法一: 使用 git stash 来保存 a 分支
+                可以 stash 多份未完成的分支
+                通过 $ git stash list 来查看所有 stash 分支
+                通过 $ git stash pop someKey(比如 stash@{2}) 来弹出你想要的 stash 并套用在当前的分支, 斌删除 stash
+                    $ git stash apply someKey(比如 stash@{2}) 将你想要的 stash 套用在当前的分支，但是不删除 stash
+                通过 $ git stash drop someKey(比如 stash@{0}) 来删除某一个 stash
+         方法二： 可以先 add ->  commit -m 'not finish' 做一个记号
+                  然后处理完 b分支后，再切回到 a 分支，使用 $ git reset HEAD^ 把剛剛做一半的東西拆回來繼續做
+
+
+
 */
