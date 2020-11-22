@@ -46,7 +46,8 @@
        git rm xxx 删除已经 commit 的文件
        git rm xxx --cached 并不是真的删除文件，而是让文件 xxx 脱离 git 的管控
 
-   5) 使用 rm 删除文件，但还未 add，可使用git checkout xxx.txt 恢复
+   5)  恢复删除的文件
+      使用 rm 删除文件，但还未 add，可使用git checkout xxx.txt 恢复
 
 
 
