@@ -66,13 +66,17 @@
     7) 要修改 Commit 紀錄有好幾種方法：
         a. 把 .git 目錄整個刪除（會把該專案所有的 Git 紀錄全部清掉，除非必要，不要輕易使用）。
         b. 使用 git rebase 來修改歷史。
-        c. 先把 Commit 用 git reset 拆掉，整理後再重新 Commit。
+        c. 先把 Commit 用 git reset commitId 拆掉，整理後再重新 Commit。
+            注意：不管是用什麼模式進行 Reset，Commit 就是 Commit，並不會因為你 Reset 它然後就消失了
             git reset 有三个参数可选，他们會決定「Commit 拆出來的那些檔案何去何從」
                 模式	              mixed 模式（默认）	soft 模式	    hard 模式
             Commit 拆出來的檔案	       丟回工作目錄	        丟回暫存區	     直接丟掉
 
+            使用 git reset commitId 后 HEAD 指针会指向 commitId 所在的 commit; 相应的文件内容也会变化。
+            使用 git reset commitID --hard 或者 git reset HEAD~前几个Commit --hard 拆掉commit后，可以使用 git reflog 来查看所有commit记录，获取拆掉的 commit id, 并在需要时进行恢复
 
         d. 使用 --amend 參數來修改最後一次的 Commit。
+            git commit --amend --no-edit 表示该次commit没有内容，提交的内容会归并到上一次commit中
 
        修改 commit 记录时，git会将其看做时一次的新的 commit，会生成新的 SHA-1 值；儘量不要在已經 Push 之後再修改 commit
 
@@ -89,6 +93,7 @@
 
     11） git blame xxx.txt 可以查看谁动过xxx.txt
 
-    12）
+    12） cat .git/HEAD 获取当前指针指向哪儿
+
 
 */
