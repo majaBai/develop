@@ -23,12 +23,15 @@
 
 
 5. git指令：
-    1） git add.  和 git add --all 的区别：
+    1)  git add.  和 git add --all 的区别：
         首先， 在 git 2.XX 版本前，git add. 不会添加删除的文件到缓存区；但是更高版本的 git 已经不存在这个区别；
         其次，git add . 這個指令會把目前當下這個目錄，以及它的子目錄、子子目錄、子子子目錄…裡的異動全部加到暫存區，但在這個目錄的以外的就不歸它管了。
               而 git add --all 指令就沒這個問題，這個指令不管在專案的哪一層目錄執行，效果都是一樣的，在這個專案裡所有的異動都會被加至暫存區。
 
-    2） git commit -m 'some comments' 会把缓存区的内容提交到仓库（仓库在本地还是远程呢？？本地）
+        git add -p xxx.txt 添加 xxx 文件的部分内容进缓冲区（输入此命令会出现一个编辑框，可选择要添加的部分）
+
+
+    2)  git commit -m 'some comments' 会把缓存区的内容提交到仓库（仓库在本地还是远程呢？？本地）
         通过 add - commit 指令 git 在背后做了什么？
 
                 add                             commit
@@ -73,7 +76,8 @@
             Commit 拆出來的檔案	       丟回工作目錄	        丟回暫存區	     直接丟掉
 
             使用 git reset commitId 后 HEAD 指针会指向 commitId 所在的 commit; 相应的文件内容也会变化。
-            使用 git reset commitID --hard 或者 git reset HEAD~前几个Commit --hard 拆掉commit后，可以使用 git reflog 来查看所有commit记录，获取拆掉的 commit id, 并在需要时进行恢复
+            使用 git reset commitID --hard 或者 git reset HEAD~前几个Commit --hard 拆掉commit后，
+            可以使用 git reflog 来查看所有commit记录，获取拆掉的 commit id, 并在需要时进行恢复
 
         d. 使用 --amend 參數來修改最後一次的 Commit。
             git commit --amend --no-edit 表示该次commit没有内容，提交的内容会归并到上一次commit中
@@ -91,9 +95,29 @@
 
     10) .gitignor 忽略不需要进行版本管理的文件
 
-    11） git blame xxx.txt 可以查看谁动过xxx.txt
+    11) git blame xxx.txt 可以查看谁动过xxx.txt
 
-    12） cat .git/HEAD 获取当前指针指向哪儿
+    12) cat .git/HEAD （ref: refs/heads/branch1  获取当前指针指向哪儿）
+        通过 cat .git/refs/heads/branch1 获取分支详细信息（其實所謂分支也不過就是一個 40 個字元的檔案罷了）
+        HEAD 通常會指向目前所在的分支。不過 HEAD 也不一定總是會指向某個分支，當 HEAD 沒有指向某個分支的時候便會造成「detached HEAD」的狀態
 
+6. git 分支
+    1) git branch 和 git branch -a 分别用于查看本地和远程的所有分支
+
+    2） git branch bName 新增分支
+        git checkout -b bName 新增分支并切换到新分支
+
+    3）为分支重命名
+       git branch -m oldbNmae newName
+
+    4) git branch -d branchName 删除分支 （使用 -D 參數可以強制把還沒合併的分支砍掉）
+
+    5） git checkout branchName 切换分支
+
+    6) 合并分支 git merge
+        如果需要在 a 分支上合并 b 分支
+       首先切换到 a 分支，其次使用 git merge b 进行合并
+
+       合并过的分支是否删除都无所谓，因为合并后的分支已经获得了被合并分支的所有内容，那么被合并分支删除与否就看心情了
 
 */
