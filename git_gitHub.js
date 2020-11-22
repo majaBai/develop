@@ -114,10 +114,15 @@
 
     5） git checkout branchName 切换分支
 
-    6) 合并分支 git merge
-        如果需要在 a 分支上合并 b 分支
+    6) 合并分支
+       如果需要在 a 分支上合并 b 分支
        首先切换到 a 分支，其次使用 git merge b 进行合并
 
        合并过的分支是否删除都无所谓，因为合并后的分支已经获得了被合并分支的所有内容，那么被合并分支删除与否就看心情了
 
+       如果在分支合并前，使用 git branch -d xxx 来删除 xxx 分支时，git 会发出警告；但如果确实要删除没有合并的分支，使用 git branch -D xxx
+       如果使用 -D 删除了未合并的分支，后悔了，如何找回来呢？git branch newBname xxxdeleteId, 需要记住 xxxdeleteId 这个删除id值（如果没记住，用 git reflog 指令去翻翻看），
+       从这里新建一个分支，这样新分支 newBname 就会获取之前未合并的分支内容
+
+       修改 branch3
 */
