@@ -41,11 +41,12 @@
         git log --oneline --grep="xxx"  可以從 Commit 訊息裡面搜尋符合 xxx 的內容
         git log -S "xxx" 可以搜尋在所有 Commit 的檔案中，哪些符合特定條件的
         git log --oneline --since="9am" --until="12am" 指定时间
+
     4) git rm -f xxx 强制删除已经 add 了但还未 commit 的文件
        git rm xxx 删除已经 commit 的文件
        git rm xxx --cached 并不是真的删除文件，而是让文件 xxx 脱离 git 的管控
 
-   5)
+   5) 使用 rm 删除文件，但还未 add，可使用git checkout xxx.txt 恢复
 
 
 
