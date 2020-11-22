@@ -76,8 +76,8 @@
             Commit 拆出來的檔案	       丟回工作目錄	        丟回暫存區	     直接丟掉
 
             使用 git reset commitId 后 HEAD 指针会指向 commitId 所在的 commit; 相应的文件内容也会变化。
-            使用 git reset commitID --hard 或者 git reset HEAD~前几个Commit --hard 拆掉commit后，
-            可以使用 git reflog 来查看所有commit记录，获取拆掉的 commit id, 并在需要时进行恢复
+            使用 git reset commitID --hard 或者 git reset HEAD~前几个Commit --hard 拆掉commit后，可以使用 git reflog 来查看所有commit记录，
+            获取拆掉的 commit id, 并在需要时进行恢复
 
         d. 使用 --amend 參數來修改最後一次的 Commit。
             git commit --amend --no-edit 表示该次commit没有内容，提交的内容会归并到上一次commit中
@@ -152,5 +152,34 @@
         首先可通过 git log 查看你想定位的 commit id
         git branch newBranch commitId  基于某个 commit 新开了一个分支
         git checkout -b newBranch commitId 基于某个 commit 新开了一个分支并切入新分支
+
+    11) 修改历史 commit 信息
+        $ git rebase -i commitId (-i 參數是指要進入 Rebase 指令的「互動模式」，而後面的 commitId 是指這次的 Rebase 指令的應用範圍會「從現在到 commitId 這個 Commit」
+        這個指令會跳出一個 Vim 編輯器
+
+    12) revert/ rebase / reset
+        指令	改變歷史紀錄	                說明
+        Reset	    是	            把目前的狀態設定成某個指定的 Commit 的狀態，通常適用於尚未推出去 (push) 的 Commit。
+        Rebase	    是	            不管是新增、修改、刪除 Commit 都相當方便，用來整理、編輯還沒有推出去的 Commit 相當方便，但通常也只適用於尚未推出去的 Commit。
+        Revert	    否	            新增一個 Commit 來反轉（或說取消）另一個 Commit 的內容，原本的 Commit 依舊還是會保留在歷史紀錄中。雖然會因此而增加 Commit 數，
+                                    但通常比較適用於已經推出去的 Commit，或是不允許使用 Reset 或 Rebase 之修改歷史紀錄的指令的場合。
+   13) tag 標籤
+        通常在開發軟體有完成特定的里程碑，例如軟體版號 1.0.0 或是 beta-release 之類的，這時候就很適合使用標籤做標記
+        $ git tag tagName commitId  为某个 commit 打上 tagName 标签
+        $ git tag tagName 为当前所在的 commit 打上标签
+        $ git tag tagName commitId -a -m "description for tag"  为某个 commit 打上 tagName 标签，并且 tag 带有description
+        $ git tag -d tagName 删除 tagName 标签
+
+    14） 当前在 a 分支，巩固走还未做完； 但需要紧急切换到 b 分支工作
+         方法一: 使用 git stash 来保存 a 分支
+                可以 stash 多份未完成的分支
+                通过 $ git stash list 来查看所有 stash 分支
+                通过 $ git stash pop someKey(比如 stash@{2}) 来弹出你想要的 stash 并套用在当前的分支, 斌删除 stash
+                    $ git stash apply someKey(比如 stash@{2}) 将你想要的 stash 套用在当前的分支，但是不删除 stash
+                通过 $ git stash drop someKey(比如 stash@{0}) 来删除某一个 stash
+         方法二： 可以先 add ->  commit -m 'not finish' 做一个记号
+                  然后处理完 b分支后，再切回到 a 分支，使用 $ git reset HEAD^ 把剛剛做一半的東西拆回來繼續做
+
+
 
 */
