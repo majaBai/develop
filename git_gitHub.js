@@ -43,13 +43,28 @@
         git log --oneline --since="9am" --until="12am" 指定时间
 
     4) git rm -f xxx 强制删除已经 add 了但还未 commit 的文件
-       git rm xxx 删除已经 commit 的文件
+       git rm xxx 可以删除已经 commit 的文件(此命令 == rm xxx.txt -> git add -> git commit)
        git rm xxx --cached 并不是真的删除文件，而是让文件 xxx 脱离 git 的管控
+       rm xxx.txt 删除文件，但要使用 git add -> git commit 来记录这次追踪
 
    5)  恢复删除的文件
       使用 rm 删除文件，但还未 add，可使用git checkout xxx.txt 恢复
+      使用 git rm 删除的文件， 首先 git restore --staged xxx.txt -> git checkout xxx.txt 恢复
 
+    6) git mv a.txt b.txt 将 a.txt 重命名为 b.txt
 
+    7) 要修改 Commit 紀錄有好幾種方法：
+        把 .git 目錄整個刪除（會把該專案所有的 Git 紀錄全部清掉，除非必要，不要輕易使用）。
+        使用 git rebase 來修改歷史。
+        先把 Commit 用 git reset 拆掉，整理後再重新 Commit。
+        使用 --amend 參數來修改最後一次的 Commit。
 
-
+       修改 commit 记录时，git会将其看做时一次的新的 commit，会生成新的 SHA-1 值；儘量不要在已經 Push 之後再修改 commit
+    8) 追加文件到最近一次commit中
+       方法1： git reset
+       方法2：在commit 新文件时使用 git commit --amend --no-edit
+    9) 新增文件夹
+        請記得一件很重要的觀念，就是 Git 在計算、產生物件的時候，是根據「檔案的內容」去做計算的，所以光是新增一個目錄，Git 是沒辦法處理它的。
+        空的目錄無法被提交！
+        解决方案：慣例上可以放一個名為 “.keep” 或 “.gitkeep” 的空檔案，讓 Git 能「感應」到這個目錄的存在
 */
