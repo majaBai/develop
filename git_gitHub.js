@@ -124,5 +124,33 @@
        如果使用 -D 删除了未合并的分支，后悔了，如何找回来呢？git branch newBname xxxdeleteId, 需要记住 xxxdeleteId 这个删除id值（如果没记住，用 git reflog 指令去翻翻看），
        从这里新建一个分支，这样新分支 newBname 就会获取之前未合并的分支内容
 
-       修改 branch3
+       取消合并：git reset HEAD^ --hard 一行指令，拆掉這個合併的 Commit 大家就會退回合併前的狀態
+
+    7) 基于 rebase 进行合并
+        從字面上來看，「rebase」是「re」加上「base」，翻成中文大概是「重新定義分支的參考基準」的意思。
+        所謂「base」就是指「你這分支是從哪裡生出來的」，以上面這個例子來說，cat 跟 dog 這兩個分支的 base 都是 master。
+        接著我們試著使用 git rebase 指令來「組合」cat 跟 dog 這兩個分支：
+        $ git rebase dog
+        大概就是「我，就是 cat 分支，我現在要重新定義我的參考基準，並且將使用 dog 分支當做我新的參考基準」的意思
+
+        取消基于 rebase 的合并：
+         1) 使用 git reflog 查看 HEAD 记录， 找到 Rebase 前的最後動作id
+            $ git reset 最後動作id --hard
+         2) 使用 git reset ORIG_HEAD --hard 輕鬆跳回 Rebase 前的狀態
+           ORIG_HEAD 會記錄「危險操作」之前 HEAD 的位置。例如分支合併或是 Reset 之類的都算是所謂的「危險操作」。
+           使用 Rebase 來合併分支的好處，就是它不像一般合併可能會產生額外的合併專用的 Commit，而且歷史順序可以依照誰 Rebase 誰而決定
+           缺點就是它相對的比一般的合併來得沒那麼直覺，一個不小心可能會弄壞掉而且還不知道怎麼 Reset 回來，或是發生衝突的時候就會停在一半，對不熟悉 Rebase 的人來說是個困擾
+    8) 解决合并冲突问题
+        基本合并： 手动解决冲突 -> git add 冲突文件 -> git commit
+        基于 rebase 的冲突： 手动解决冲突 -> git add 冲突文件 -> git rebase --continue
+
+    9) 如果发生冲突是非文字文件，比如同名的图片
+       决定使用哪张图片 git checkout --ours xxx.jpg 保留当前分支的图片
+                        git checkout --theirs xxx.jpg 保留合并进来的图片
+
+    10) 回到过去的某一个 commit 上重新开一个新分支
+        首先可通过 git log 查看你想定位的 commit id
+        git branch newBranch commitId  基于某个 commit 新开了一个分支
+        git checkout -b newBranch commitId 基于某个 commit 新开了一个分支并切入新分支
+
 */
